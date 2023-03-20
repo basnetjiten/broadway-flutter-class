@@ -1,7 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_online_course/feature/counter/presentation/blocs/movie_cubit/movie_cubit.dart';
+import 'package:flutter_online_course/feature/counter/presentation/blocs/pizza_cubit/pizza_cubit.dart';
+import 'package:flutter_online_course/feature/counter/presentation/movie_home_screen.dart';
 import 'package:flutter_online_course/feature/counter/presentation/pizza_screen.dart';
+import 'package:get_it/get_it.dart';
+
+GetIt getIt = GetIt.instance;
 
 void main() {
+  getIt.registerLazySingleton<PizzaCubit>(() => PizzaCubit());
+  getIt.registerLazySingleton<MovieCubit>(() => MovieCubit());
+  getIt.registerLazySingleton<Dio>(() => Dio());
   runApp(const MyApp());
 }
 
@@ -15,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const PizzaScreen(),
+      home: const MovieHomeScreen(),
     );
   }
 }
