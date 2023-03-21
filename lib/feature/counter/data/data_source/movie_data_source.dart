@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_online_course/core/constants.dart';
 import 'package:flutter_online_course/feature/counter/data/models/movie_card_model.dart';
+import 'package:flutter_online_course/feature/counter/data/models/movie_details_model.dart';
 import 'package:flutter_online_course/main.dart';
 
 /// Data source where all the api calls are handled
@@ -15,8 +17,8 @@ class MovieDataSource implements MovieDataSourceAbs {
 
   /// Fetch api using dio client' get method
   @override
-  Future<List<MovieCardModel>> fetchUpcomingMovies({required String upcomingMovies}) async {
-
+  Future<List<MovieCardModel>> fetchUpcomingMovies(
+      {required String upcomingMovies}) async {
     /// initializing empty map of json
     Map<String, dynamic> json = {};
 
@@ -32,7 +34,7 @@ class MovieDataSource implements MovieDataSourceAbs {
       json = jsonResponse.data!;
     }
 
- /// Looping through a list of results-key in a api json
+    /// Looping through a list of results-key in a api json
     for (var result in json['results']) {
       final MovieCardModel movieCard = MovieCardModel.fromJson(result);
       movieCardModels.add(movieCard);
@@ -40,8 +42,24 @@ class MovieDataSource implements MovieDataSourceAbs {
 
     return movieCardModels;
   }
+
+  Future<MovieDetailsModel?> fetchMovieDetails({required int movieId}) async {
+    MovieDetailsModel? movieDetailsModel;
+    final Response<
+        Map<String,
+            dynamic>> movieDetailResponse = await _dioClient.get(
+        '${MovieConstants.baseUrl}/$movieId?api_key=${MovieConstants.key}&language=en-US');
+
+    final Map<String, dynamic>? movieJson = movieDetailResponse.data;
+
+    if (movieJson != null) {
+      movieDetailsModel = MovieDetailsModel.fromJson(movieJson);
+    }
+    return movieDetailsModel;
+  }
 }
 
 abstract class MovieDataSourceAbs {
-  Future<List<MovieCardModel>> fetchUpcomingMovies({required String upcomingMovies});
+  Future<List<MovieCardModel>> fetchUpcomingMovies(
+      {required String upcomingMovies});
 }
