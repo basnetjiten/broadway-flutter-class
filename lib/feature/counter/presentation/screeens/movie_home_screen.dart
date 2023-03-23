@@ -1,14 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_online_course/feature/counter/data/models/pizza.dart';
+import 'package:flutter_online_course/core/router.gr.dart';
 import 'package:flutter_online_course/feature/counter/presentation/blocs/movie_cubit/movie_cubit.dart';
-import 'package:flutter_online_course/feature/counter/presentation/blocs/pizza_cubit/pizza_cubit.dart';
-import 'package:flutter_online_course/feature/counter/presentation/pizza_list_screen.dart';
-import 'package:flutter_online_course/feature/counter/presentation/screeens/movie_detail_screen.dart';
 import 'package:flutter_online_course/feature/counter/presentation/widgets/movie_list_widget.dart';
 import 'package:flutter_online_course/main.dart';
 
+@RoutePage()
 class MovieHomeScreen extends StatefulWidget {
   const MovieHomeScreen({Key? key}) : super(key: key);
 
@@ -35,13 +33,9 @@ class _MovieHomeScreenState extends State<MovieHomeScreen> {
       listener: (context, state) {
         if (state is MovieDetailFetched) {
           final movieDetailModel = state.movieDetailsModel;
-          Navigator.of(context).pop();
-          Navigator.of(context).push(
-            CupertinoPageRoute(
-              builder: (context) =>
-                  MovieDetailScreen(movieDetailsModel: movieDetailModel),
-            ),
-          );
+          // Navigator.of(context, rootNavigator: true).pop();
+          context
+              .pushRoute(MovieDetailRoute(movieDetailsModel: movieDetailModel));
         }
       },
       child: Scaffold(

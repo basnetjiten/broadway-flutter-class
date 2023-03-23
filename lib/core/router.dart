@@ -1,14 +1,11 @@
-// import 'package:auto_route/auto_route.dart';
-// import 'package:flutter_online_course/feature/counter/presentation/screeens/movie_home_screen.dart';
-// part 'app_router.gr.dart';
-//
-// @MaterialAutoRouter(
-//   //replaceInRouteName: 'Screen,Route',
-//   routes: <AutoRoute>[
-//     AutoRoute(
-//       page: MovieHomeScreen,
-//       initial: true,
-//     )
-//   ]
-// )
-// class $Router {}
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter_online_course/core/router.gr.dart';
+
+@AutoRouterConfig(replaceInRouteName: 'Screen,Route')
+class AppRouter extends $AppRouter {
+  @override
+  final List<AutoRoute> routes = [
+    AutoRoute(page: MovieHomeRoute.page, path: '/'),
+    AutoRoute(page: MovieDetailRoute.page, path: '/movieDetailRoute'),
+  ];
+}
