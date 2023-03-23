@@ -12,7 +12,6 @@ void main() {
   getIt.registerLazySingleton<PizzaCubit>(() => PizzaCubit());
   getIt.registerLazySingleton<MovieCubit>(() => MovieCubit());
   getIt.registerLazySingleton<Dio>(() => Dio());
-  getIt.registerLazySingleton<Dio>(() => Dio());
   runApp(const MyApp());
 }
 

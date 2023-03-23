@@ -20,10 +20,10 @@ class MovieFetched extends MovieState {
 
 
 class MovieDetailFetched extends MovieState {
-  const MovieDetailFetched(this._movieDetailsModel);
+  const MovieDetailFetched(this.movieDetailsModel);
 
-  final MovieDetailsModel _movieDetailsModel;
+  final MovieDetailsModel movieDetailsModel;
 
   @override
-  List<Object?> get props => [_movieDetailsModel];
+  List<Object?> get props => [movieDetailsModel];
 }
