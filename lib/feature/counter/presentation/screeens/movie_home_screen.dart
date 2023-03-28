@@ -66,27 +66,85 @@ class _MovieHomeScreenState extends State<MovieHomeScreen>
       //   ),
       // ),
       child: Scaffold(
-        appBar: AppBar(
-          flexibleSpace: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TabBar(
-                controller: _tabController,
-                tabs: const [
-                  Tab(
-                    text: 'Popular',
-                  ),
-                  Tab(
-                    text: 'Coming Soon',
-                  ),
-                  Tab(
-                    text: 'Top Rated',
-                  ),
-                ],
-              ),
-            ],
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(90),
+          child: Container(
+            color: Colors.black87,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Text(
+                        "WATCH NOW",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.search,
+                          color: Colors.white,
+                          size: 25,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                TabBar(
+                  controller: _tabController,
+                  tabs: const [
+                    Tab(
+                      text: 'Popular',
+                    ),
+                    Tab(
+                      text: 'Coming Soon',
+                    ),
+                    Tab(
+                      text: 'Top Rated',
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
+
+        // appBar: AppBar(
+        //   actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
+        //   flexibleSpace: Column(
+        //     mainAxisAlignment: MainAxisAlignment.end,
+        //     children: [
+        //       const SizedBox(
+        //         height: 100,
+        //       ),
+        //       TabBar(
+        //         controller: _tabController,
+        //         tabs: const [
+        //           Tab(
+        //             text: 'Popular',
+        //           ),
+        //           Tab(
+        //             text: 'Coming Soon',
+        //           ),
+        //           Tab(
+        //             text: 'Top Rated',
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // ),
         body: TabBarView(
           controller: _tabController,
           children: [
