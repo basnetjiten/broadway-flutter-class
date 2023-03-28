@@ -14,12 +14,15 @@ class MovieHomeScreen extends StatefulWidget {
   State<MovieHomeScreen> createState() => _MovieHomeScreenState();
 }
 
-class _MovieHomeScreenState extends State<MovieHomeScreen> {
+class _MovieHomeScreenState extends State<MovieHomeScreen>
+    with SingleTickerProviderStateMixin {
   late MovieCubit _movieCubit;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 3, vsync: this);
     _movieCubit = getIt<MovieCubit>();
     _movieCubit.getUpcomingMovies(
         apiUrl:
@@ -38,43 +41,89 @@ class _MovieHomeScreenState extends State<MovieHomeScreen> {
               .pushRoute(MovieDetailRoute(movieDetailsModel: movieDetailModel));
         }
       },
+
+      // child: DefaultTabController(
+      //   length: 3,
+      //   child: Scaffold(
+      //     appBar: AppBar(
+      //         bottom: TabBar(
+      //           controller: _tabController,
+      //           tabs: const [
+      //             Tab(
+      //               text: 'Popular',
+      //             ),
+      //             Tab(
+      //               text: 'Coming Soon',
+      //             ),
+      //             Tab(
+      //               text: 'Top Rated',
+      //             ),
+      //           ],
+      //         )),
+      //     body: const TabBarView(
+      //       children: [Text('1'), Text('1'), Text('1')],
+      //     ),
+      //   ),
+      // ),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Movie Screen'),
-        ),
-        body: Center(
-          child: Column(
+          flexibleSpace: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Text('Pizza initial screeen'),
-              Expanded(
-                child: BlocBuilder<MovieCubit, MovieState>(
-                    bloc: _movieCubit,
-                    builder: (context, state) {
-                      if (state is MovieFetched) {
-                        return MovieListWidget(
-                          movieFetched: state,
-                          onClick: (int movieId) {
-                            _movieCubit.getMovieDetails(movieId: movieId);
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return const AlertDialog(
-                                  content: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }),
-              )
+              TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(
+                    text: 'Popular',
+                  ),
+                  Tab(
+                    text: 'Coming Soon',
+                  ),
+                  Tab(
+                    text: 'Top Rated',
+                  ),
+                ],
+              ),
             ],
           ),
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: BlocBuilder<MovieCubit, MovieState>(
+                      bloc: _movieCubit,
+                      builder: (context, state) {
+                        if (state is MovieFetched) {
+                          return MovieListWidget(
+                            movieFetched: state,
+                            onClick: (int movieId) {
+                              _movieCubit.getMovieDetails(movieId: movieId);
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const AlertDialog(
+                                    content: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }),
+                )
+              ],
+            ),
+            Text("TAB2 "),
+            Text("TAB3")
+          ],
         ),
       ),
     );
