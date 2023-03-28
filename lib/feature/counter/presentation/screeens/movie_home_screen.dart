@@ -40,7 +40,7 @@ class _MovieHomeScreenState extends State<MovieHomeScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Pizza Screen'),
+          title: const Text('Movie Screen'),
         ),
         body: Center(
           child: Column(

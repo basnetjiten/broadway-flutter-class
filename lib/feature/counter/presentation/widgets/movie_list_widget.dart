@@ -11,89 +11,83 @@ class MovieListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: movieFetched.moviesCard.length,
-      itemBuilder: (context, index) {
-        final movie = movieFetched.moviesCard[index];
-
-        return GestureDetector(
-          onTap: () => onClick(movie.id),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            width: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.black,
-            ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GridView.builder(
+        itemCount: movieFetched.moviesCard.length,
+        itemBuilder: (context, index) {
+          final movie = movieFetched.moviesCard[index];
+          return GestureDetector(
+            onTap: () => onClick(movie.id),
             child: Stack(
-              alignment: Alignment.topCenter,
+              alignment: Alignment.center,
               children: [
-                Column(
-                  children: [
-                    Center(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5.2),
-                        child: CachedNetworkImage(
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          imageUrl:
-                              'https://image.tmdb.org/t/p/w300${movie.posterPath}',
-                        ),
-                      ),
+                SizedBox(
+                  width: 180,
+                  height: 400,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CachedNetworkImage(
+                      width: 160,
+                      fit: BoxFit.fill,
+                      imageUrl:
+                          'https://image.tmdb.org/t/p/w300${movie.posterPath}',
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Wrap(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "${movie.title} ",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Text(
-                                      (movie.releaseDate == "")
-                                          ? ""
-                                          : "(${movie.releaseDate.year})",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 1.5),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
+                  ),
+                ),
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        color: Colors.black87,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              "${movie.title} ",
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                              maxLines: 4,
+                            ),
+                            Text(
+                              (movie.releaseDate == "")
+                                  ? ""
+                                  : "(${movie.releaseDate.year})",
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
                               movie.overview,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )
-                        ],
+                              style: const TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
-          ),
-        );
-      },
+          );
+        },
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 15,
+            childAspectRatio: 0.6),
+      ),
     );
   }
 }
