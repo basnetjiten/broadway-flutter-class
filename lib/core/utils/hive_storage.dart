@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveUtils {
   static Box? _ourDataBase;
-  static Box<List<MovieCardModel>>? _movieListDB;
 
   initDb() async {
     ///We can pass own path storage to Hive
@@ -32,7 +31,7 @@ class HiveUtils {
     _ourDataBase?.put(key, value);
   }
 
-  static List<MovieCardModel>? getSavedMovies(String key) {
+  static List? getSavedMovies(String key) {
     return _ourDataBase?.get(key);
   }
 }

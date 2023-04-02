@@ -13,7 +13,7 @@ class BookMarkedMovieScreen extends StatefulWidget {
 }
 
 class _BookMarkedMovieScreenState extends State<BookMarkedMovieScreen> {
-  List<MovieCardModel>? storedMovies = [];
+  late List<MovieCardModel>? storedMovies;
 
   @override
   void initState() {
