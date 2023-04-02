@@ -9,6 +9,11 @@ class MovieInitial extends MovieState {
   List<Object> get props => [];
 }
 
+class MovieFetching extends MovieState {
+  @override
+  List<Object> get props => [];
+}
+
 class MovieFetched extends MovieState {
   const MovieFetched(this.moviesCard);
 
@@ -17,5 +22,3 @@ class MovieFetched extends MovieState {
   @override
   List<Object> get props => [moviesCard];
 }
-
-

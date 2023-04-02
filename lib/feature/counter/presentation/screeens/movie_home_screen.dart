@@ -74,6 +74,16 @@ class _MovieHomeScreenState extends State<MovieHomeScreen>
                     ),
                     IconButton(
                       onPressed: () {
+                        context.router.push(const BookMarkedMovieRoute());
+                      },
+                      icon: const Icon(
+                        Icons.bookmark_added_rounded,
+                        color: Colors.white,
+                        size: 25,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
                         context.router.push(const MovieSearchRoute());
                       },
                       icon: const Icon(
@@ -85,6 +95,21 @@ class _MovieHomeScreenState extends State<MovieHomeScreen>
                   ],
                 ),
                 TabBar(
+                  onTap: (index) {
+                    if (index == 0) {
+                      _movieCubit.getUpcomingMovies(
+                          apiUrl:
+                              'http://api.themoviedb.org/3/movie/popular?api_key=caebc202bd0a26f84f4e0d986beb15cd');
+                    } else if (index == 1) {
+                      _movieCubit.getUpcomingMovies(
+                          apiUrl:
+                              'http://api.themoviedb.org/3/movie/upcoming?api_key=caebc202bd0a26f84f4e0d986beb15cd');
+                    } else if (index == 2) {
+                      _movieCubit.getUpcomingMovies(
+                          apiUrl:
+                              'http://api.themoviedb.org/3/movie/top_rated?api_key=caebc202bd0a26f84f4e0d986beb15cd');
+                    }
+                  },
                   controller: _tabController,
                   tabs: const [
                     Tab(
@@ -131,145 +156,158 @@ class _MovieHomeScreenState extends State<MovieHomeScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            Column(
-              children: [
-                Expanded(
-                  child: BlocBuilder<MovieCubit, MovieState>(
-                      bloc: _movieCubit,
-                      builder: (context, state) {
-                        if (state is MovieFetched) {
-                          return MovieListWidget(
-                            movieFetched: state,
-                            onClick: (int movieId) {
-                              _movieDetailsCubit.getMovieDetails(
-                                  movieId: movieId);
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return const AlertDialog(
-                                    content: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          );
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }),
-                )
-              ],
-            ),
-            Text("TAB2 "),
-            Text("TAB3")
+            buildColumn(),
+            buildColumn(),
+            buildColumn(),
           ],
         ),
       ),
     );
   }
 
-  // child: DefaultTabController(
-  //   length: 3,
-  //   child: Scaffold(
-  //     appBar: AppBar(
-  //         bottom: TabBar(
-  //       //  controller: _tabController,
-  //       tabs: const [
-  //         Tab(
-  //           text: 'Popular',
-  //         ),
-  //         Tab(
-  //           text: 'Coming Soon',
-  //         ),
-  //         Tab(
-  //           text: 'Top Rated',
-  //         ),
-  //       ],
-  //     )),
-  //     body:  TabBarView(
-  //       children: [
-  //    Center(
-  //         child: Column(
-  //           children: [
-  //
-  //             Expanded(
-  //               child: BlocBuilder<MovieCubit, MovieState>(
-  //                   bloc: _movieCubit,
-  //                   builder: (context, state) {
-  //                     if (state is MovieFetched) {
-  //                       return MovieListWidget(
-  //                         movieFetched: state,
-  //                         onClick: (int movieId) {
-  //                           _movieDetailsCubit.getMovieDetails(movieId: movieId);
-  //                           showDialog(
-  //                             context: context,
-  //                             builder: (context) {
-  //                               return const AlertDialog(
-  //                                 content: Center(
-  //                                   child: CircularProgressIndicator(),
-  //                                 ),
-  //                               );
-  //                             },
-  //                           );
-  //                         },
-  //                       );
-  //                     }
-  //                     return const Center(
-  //                       child: CircularProgressIndicator(),
-  //                     );
-  //                   }),
-  //             )
-  //           ],
-  //         ),
-  //       ),
-  //         Text('Comming soon'),
-  //         Text('Top Rated')
-  //       ],
-  //     ),
-  //   ),
-  // ),
-  // child: Scaffold(
-  //   appBar: AppBar(
-  //     title: const Text('Movie Screen'),
-  //   ),
-  //   body: Center(
-  //     child: Column(
-  //       children: [
-  //
-  //         Expanded(
-  //           child: BlocBuilder<MovieCubit, MovieState>(
-  //               bloc: _movieCubit,
-  //               builder: (context, state) {
-  //                 if (state is MovieFetched) {
-  //                   return MovieListWidget(
-  //                     movieFetched: state,
-  //                     onClick: (int movieId) {
-  //                       _movieDetailsCubit.getMovieDetails(movieId: movieId);
-  //                       showDialog(
-  //                         context: context,
-  //                         builder: (context) {
-  //                           return const AlertDialog(
-  //                             content: Center(
-  //                               child: CircularProgressIndicator(),
-  //                             ),
-  //                           );
-  //                         },
-  //                       );
-  //                     },
-  //                   );
-  //                 }
-  //                 return const Center(
-  //                   child: CircularProgressIndicator(),
-  //                 );
-  //               }),
-  //         )
-  //       ],
-  //     ),
-  //   ),
-  // ),
+  Column buildColumn() {
+    return Column(
+      children: [
+        Expanded(
+          child: BlocBuilder<MovieCubit, MovieState>(
+              bloc: _movieCubit,
+              builder: (context, state) {
+                if (state is MovieFetched) {
+                  return MovieListWidget(
+                    movieFetched: state,
+                    onClick: (int movieId) {
+                      _movieDetailsCubit.getMovieDetails(movieId: movieId);
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (context) {
+                      //     return const AlertDialog(
+                      //       insetPadding: EdgeInsets.all(20),
+                      //       content: SizedBox(
+                      //         height: 50,
+                      //         width: 50,
+                      //         child: Center(
+                      //           child: CircularProgressIndicator(),
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      // );
+                    },
+                    onBookmark: (int id) {
+                      saveMovieId(id);
+                    },
+                  );
+                } else if (state is MovieFetching) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+        )
+      ],
+    );
+  }
+
+// child: DefaultTabController(
+//   length: 3,
+//   child: Scaffold(
+//     appBar: AppBar(
+//         bottom: TabBar(
+//       //  controller: _tabController,
+//       tabs: const [
+//         Tab(
+//           text: 'Popular',
+//         ),
+//         Tab(
+//           text: 'Coming Soon',
+//         ),
+//         Tab(
+//           text: 'Top Rated',
+//         ),
+//       ],
+//     )),
+//     body:  TabBarView(
+//       children: [
+//    Center(
+//         child: Column(
+//           children: [
+//
+//             Expanded(
+//               child: BlocBuilder<MovieCubit, MovieState>(
+//                   bloc: _movieCubit,
+//                   builder: (context, state) {
+//                     if (state is MovieFetched) {
+//                       return MovieListWidget(
+//                         movieFetched: state,
+//                         onClick: (int movieId) {
+//                           _movieDetailsCubit.getMovieDetails(movieId: movieId);
+//                           showDialog(
+//                             context: context,
+//                             builder: (context) {
+//                               return const AlertDialog(
+//                                 content: Center(
+//                                   child: CircularProgressIndicator(),
+//                                 ),
+//                               );
+//                             },
+//                           );
+//                         },
+//                       );
+//                     }
+//                     return const Center(
+//                       child: CircularProgressIndicator(),
+//                     );
+//                   }),
+//             )
+//           ],
+//         ),
+//       ),
+//         Text('Comming soon'),
+//         Text('Top Rated')
+//       ],
+//     ),
+//   ),
+// ),
+// child: Scaffold(
+//   appBar: AppBar(
+//     title: const Text('Movie Screen'),
+//   ),
+//   body: Center(
+//     child: Column(
+//       children: [
+//
+//         Expanded(
+//           child: BlocBuilder<MovieCubit, MovieState>(
+//               bloc: _movieCubit,
+//               builder: (context, state) {
+//                 if (state is MovieFetched) {
+//                   return MovieListWidget(
+//                     movieFetched: state,
+//                     onClick: (int movieId) {
+//                       _movieDetailsCubit.getMovieDetails(movieId: movieId);
+//                       showDialog(
+//                         context: context,
+//                         builder: (context) {
+//                           return const AlertDialog(
+//                             content: Center(
+//                               child: CircularProgressIndicator(),
+//                             ),
+//                           );
+//                         },
+//                       );
+//                     },
+//                   );
+//                 }
+//                 return const Center(
+//                   child: CircularProgressIndicator(),
+//                 );
+//               }),
+//         )
+//       ],
+//     ),
+//   ),
+// ),
 }
 
 //BlocProvider
@@ -289,4 +327,8 @@ void setAppBarTitleFromSharedPref() {
 
 void setAppBarTitleFromHive() {
   HiveUtils.setString('titleBarKey', 'OUR MOVIE APP FROM HIVE');
+}
+
+void saveMovieId(int movieId) {
+  HiveUtils.setMovieId('movieId', movieId);
 }

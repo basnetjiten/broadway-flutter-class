@@ -1,24 +1,38 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_online_course/core/utils/hive_storage.dart';
+import 'package:flutter_online_course/feature/counter/data/models/movie_card_model.dart';
 import 'package:flutter_online_course/feature/counter/presentation/blocs/movie_cubit/movie_cubit.dart';
 
-class MovieListWidget extends StatelessWidget {
+class MovieListWidget extends StatefulWidget {
   const MovieListWidget(
-      {super.key, required this.movieFetched, required this.onClick});
+      {super.key,
+      required this.movieFetched,
+      required this.onClick,
+      required this.onBookmark});
 
   final Function(int id) onClick;
+  final Function(int id) onBookmark;
   final MovieFetched movieFetched;
 
+  @override
+  State<MovieListWidget> createState() => _MovieListWidgetState();
+}
+
+class _MovieListWidgetState extends State<MovieListWidget> {
+  final List<MovieCardModel> movies = [];
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GridView.builder(
-        itemCount: movieFetched.moviesCard.length,
+        itemCount: widget.movieFetched.moviesCard.length,
         itemBuilder: (context, index) {
-          final movie = movieFetched.moviesCard[index];
+          final movie = widget.movieFetched.moviesCard[index];
           return GestureDetector(
-            onTap: () => onClick(movie.id),
+            onTap: () => widget.onClick(movie.id),
             child: Stack(
               alignment: Alignment.topCenter,
               children: [
@@ -31,7 +45,7 @@ class MovieListWidget extends StatelessWidget {
                       width: 160,
                       fit: BoxFit.fill,
                       imageUrl:
-                      'https://image.tmdb.org/t/p/w300${movie.posterPath}',
+                          'https://image.tmdb.org/t/p/w300${movie.posterPath}',
                     ),
                   ),
                 ),
@@ -62,7 +76,7 @@ class MovieListWidget extends StatelessWidget {
                             Text(
                               (movie.releaseDate == "")
                                   ? ""
-                                  : "(${movie.releaseDate.year})",
+                                  : "(${movie.releaseDate})",
                               style: const TextStyle(color: Colors.white),
                             ),
                             const SizedBox(height: 5),
@@ -77,7 +91,32 @@ class MovieListWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),              ],
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        widget.onBookmark(movie.id);
+                        HiveUtils.setString(
+                            'movie', jsonEncode(movie.toJson()));
+                        movies.add(movie);
+                        HiveUtils.saveMovies('movies', movies);
+                      });
+                    },
+                    icon: (HiveUtils.getMovieId('movieId') != null &&
+                            HiveUtils.getMovieId('movieId') == movie.id)
+                        ? const Icon(
+                            Icons.bookmark,
+                            color: Colors.purple,
+                          )
+                        : const Icon(
+                            Icons.bookmark_border_outlined,
+                            color: Colors.white,
+                          ),
+                  ),
+                )
+              ],
             ),
           );
         },
