@@ -19,12 +19,5 @@ class MovieCubit extends Cubit<MovieState> {
     emit(MovieFetched(moviesData));
   }
 
-  void getMovieDetails({required int movieId})async{
 
-    final movieDetails =await _movieRepository.getMovieDetails(movieId: movieId);
-
-    if(movieDetails!=null){
-      emit(MovieDetailFetched(movieDetails));
-    }
-  }
 }

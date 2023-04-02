@@ -19,11 +19,3 @@ class MovieFetched extends MovieState {
 }
 
 
-class MovieDetailFetched extends MovieState {
-  const MovieDetailFetched(this.movieDetailsModel);
-
-  final MovieDetailsModel movieDetailsModel;
-
-  @override
-  List<Object?> get props => [movieDetailsModel];
-}

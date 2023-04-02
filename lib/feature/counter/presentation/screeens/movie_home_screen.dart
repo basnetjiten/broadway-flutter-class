@@ -2,7 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_online_course/core/router.gr.dart';
+import 'package:flutter_online_course/core/utils/hive_storage.dart';
+import 'package:flutter_online_course/core/utils/shared_pref.dart';
 import 'package:flutter_online_course/feature/counter/presentation/blocs/movie_cubit/movie_cubit.dart';
+import 'package:flutter_online_course/feature/counter/presentation/blocs/movie_cubit/movie_details_cubit/movie_details_cubit.dart';
 import 'package:flutter_online_course/feature/counter/presentation/widgets/movie_list_widget.dart';
 import 'package:flutter_online_course/main.dart';
 
@@ -17,57 +20,38 @@ class MovieHomeScreen extends StatefulWidget {
 class _MovieHomeScreenState extends State<MovieHomeScreen>
     with SingleTickerProviderStateMixin {
   late MovieCubit _movieCubit;
+  late MovieDetailsCubit _movieDetailsCubit;
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _movieCubit = getIt<MovieCubit>();
-    _movieCubit.getUpcomingMovies(
-        apiUrl:
-            'http://api.themoviedb.org/3/movie/upcoming?api_key=caebc202bd0a26f84f4e0d986beb15cd');
+    //setAppBarTitleFromSharedPref();
+    setAppBarTitleFromHive();
+    _movieCubit = getIt<MovieCubit>()
+      ..getUpcomingMovies(
+          apiUrl:
+              'http://api.themoviedb.org/3/movie/top_rated?api_key=caebc202bd0a26f84f4e0d986beb15cd');
+
+    _movieDetailsCubit = getIt<MovieDetailsCubit>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MovieCubit, MovieState>(
-      bloc: _movieCubit,
+    return BlocListener<MovieDetailsCubit, MovieDetailsState>(
+      bloc: _movieDetailsCubit,
       listener: (context, state) {
         if (state is MovieDetailFetched) {
           final movieDetailModel = state.movieDetailsModel;
           // Navigator.of(context, rootNavigator: true).pop();
-          context
-              .pushRoute(MovieDetailRoute(movieDetailsModel: movieDetailModel));
+          context.router
+              .push(MovieDetailRoute(movieDetailsModel: movieDetailModel));
         }
       },
-
-      // child: DefaultTabController(
-      //   length: 3,
-      //   child: Scaffold(
-      //     appBar: AppBar(
-      //         bottom: TabBar(
-      //           controller: _tabController,
-      //           tabs: const [
-      //             Tab(
-      //               text: 'Popular',
-      //             ),
-      //             Tab(
-      //               text: 'Coming Soon',
-      //             ),
-      //             Tab(
-      //               text: 'Top Rated',
-      //             ),
-      //           ],
-      //         )),
-      //     body: const TabBarView(
-      //       children: [Text('1'), Text('1'), Text('1')],
-      //     ),
-      //   ),
-      // ),
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(90),
+          preferredSize: const Size.fromHeight(100),
           child: Container(
             color: Colors.black87,
             child: Column(
@@ -88,15 +72,14 @@ class _MovieHomeScreenState extends State<MovieHomeScreen>
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                          size: 25,
-                        ),
+                    IconButton(
+                      onPressed: () {
+                        context.router.push(const MovieSearchRoute());
+                      },
+                      icon: const Icon(
+                        Icons.search,
+                        color: Colors.white,
+                        size: 25,
                       ),
                     ),
                   ],
@@ -158,7 +141,8 @@ class _MovieHomeScreenState extends State<MovieHomeScreen>
                           return MovieListWidget(
                             movieFetched: state,
                             onClick: (int movieId) {
-                              _movieCubit.getMovieDetails(movieId: movieId);
+                              _movieDetailsCubit.getMovieDetails(
+                                  movieId: movieId);
                               showDialog(
                                 context: context,
                                 builder: (context) {
@@ -186,6 +170,106 @@ class _MovieHomeScreenState extends State<MovieHomeScreen>
       ),
     );
   }
+
+  // child: DefaultTabController(
+  //   length: 3,
+  //   child: Scaffold(
+  //     appBar: AppBar(
+  //         bottom: TabBar(
+  //       //  controller: _tabController,
+  //       tabs: const [
+  //         Tab(
+  //           text: 'Popular',
+  //         ),
+  //         Tab(
+  //           text: 'Coming Soon',
+  //         ),
+  //         Tab(
+  //           text: 'Top Rated',
+  //         ),
+  //       ],
+  //     )),
+  //     body:  TabBarView(
+  //       children: [
+  //    Center(
+  //         child: Column(
+  //           children: [
+  //
+  //             Expanded(
+  //               child: BlocBuilder<MovieCubit, MovieState>(
+  //                   bloc: _movieCubit,
+  //                   builder: (context, state) {
+  //                     if (state is MovieFetched) {
+  //                       return MovieListWidget(
+  //                         movieFetched: state,
+  //                         onClick: (int movieId) {
+  //                           _movieDetailsCubit.getMovieDetails(movieId: movieId);
+  //                           showDialog(
+  //                             context: context,
+  //                             builder: (context) {
+  //                               return const AlertDialog(
+  //                                 content: Center(
+  //                                   child: CircularProgressIndicator(),
+  //                                 ),
+  //                               );
+  //                             },
+  //                           );
+  //                         },
+  //                       );
+  //                     }
+  //                     return const Center(
+  //                       child: CircularProgressIndicator(),
+  //                     );
+  //                   }),
+  //             )
+  //           ],
+  //         ),
+  //       ),
+  //         Text('Comming soon'),
+  //         Text('Top Rated')
+  //       ],
+  //     ),
+  //   ),
+  // ),
+  // child: Scaffold(
+  //   appBar: AppBar(
+  //     title: const Text('Movie Screen'),
+  //   ),
+  //   body: Center(
+  //     child: Column(
+  //       children: [
+  //
+  //         Expanded(
+  //           child: BlocBuilder<MovieCubit, MovieState>(
+  //               bloc: _movieCubit,
+  //               builder: (context, state) {
+  //                 if (state is MovieFetched) {
+  //                   return MovieListWidget(
+  //                     movieFetched: state,
+  //                     onClick: (int movieId) {
+  //                       _movieDetailsCubit.getMovieDetails(movieId: movieId);
+  //                       showDialog(
+  //                         context: context,
+  //                         builder: (context) {
+  //                           return const AlertDialog(
+  //                             content: Center(
+  //                               child: CircularProgressIndicator(),
+  //                             ),
+  //                           );
+  //                         },
+  //                       );
+  //                     },
+  //                   );
+  //                 }
+  //                 return const Center(
+  //                   child: CircularProgressIndicator(),
+  //                 );
+  //               }),
+  //         )
+  //       ],
+  //     ),
+  //   ),
+  // ),
 }
 
 //BlocProvider
@@ -198,3 +282,11 @@ class _MovieHomeScreenState extends State<MovieHomeScreen>
 
 //dio package
 // auto_route
+
+void setAppBarTitleFromSharedPref() {
+  PreferenceUtils.setString('titleBarKey', 'OUR MOVIE APP');
+}
+
+void setAppBarTitleFromHive() {
+  HiveUtils.setString('titleBarKey', 'OUR MOVIE APP FROM HIVE');
+}

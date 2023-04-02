@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_online_course/core/constants.dart';
 import 'package:flutter_online_course/feature/counter/data/models/movie_card_model.dart';
 import 'package:flutter_online_course/feature/counter/data/models/movie_details_model.dart';
+import 'package:flutter_online_course/feature/counter/data/models/searched_movie_model.dart';
 import 'package:flutter_online_course/main.dart';
 
 /// Data source where all the api calls are handled
@@ -56,6 +57,23 @@ class MovieDataSource implements MovieDataSourceAbs {
       movieDetailsModel = MovieDetailsModel.fromJson(movieJson);
     }
     return movieDetailsModel;
+  }
+
+  Future<SearchedMovieModel?> searchMovie({required String userQuery}) async {
+    SearchedMovieModel? searchedMovieModel;
+
+    final String movieSearchApiPath =
+        '${MovieConstants.searchMovieUrl}query=$userQuery';
+
+    final Response<Map<String, dynamic>> movieDetailResponse =
+        await _dioClient.get(movieSearchApiPath);
+
+    final Map<String, dynamic>? movieJson = movieDetailResponse.data;
+
+    if (movieJson != null) {
+      searchedMovieModel = SearchedMovieModel.fromJson(movieJson);
+    }
+    return searchedMovieModel;
   }
 }
 

@@ -20,10 +20,10 @@ class MovieListWidget extends StatelessWidget {
           return GestureDetector(
             onTap: () => onClick(movie.id),
             child: Stack(
-              alignment: Alignment.center,
+              alignment: Alignment.topCenter,
               children: [
                 SizedBox(
-                  width: 180,
+                  width: 190,
                   height: 400,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -31,7 +31,7 @@ class MovieListWidget extends StatelessWidget {
                       width: 160,
                       fit: BoxFit.fill,
                       imageUrl:
-                          'https://image.tmdb.org/t/p/w300${movie.posterPath}',
+                      'https://image.tmdb.org/t/p/w300${movie.posterPath}',
                     ),
                   ),
                 ),
@@ -41,13 +41,13 @@ class MovieListWidget extends StatelessWidget {
                     child: Container(
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
                         ),
                         color: Colors.black87,
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(5),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -77,8 +77,7 @@ class MovieListWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ),              ],
             ),
           );
         },
